@@ -1,0 +1,68 @@
+// Vertex shader
+const vertexShaderSource = `
+attribute vec3 vertex;
+attribute vec2 a_texcoord;
+
+uniform mat4 ModelViewProjectionMatrix;
+
+varying vec2 v_texCoord;
+
+void main() {
+    gl_Position = ModelViewProjectionMatrix * vec4(vertex, 1.0);
+    v_texCoord = a_texcoord;
+}`;
+
+
+// Fragment shader
+const fragmentShaderSource = `
+precision mediump float;
+
+varying vec2 v_texCoord;
+uniform sampler2D u_texture;
+uniform float u_textureRotation;
+
+void main() {
+    // Rotate texture coordinates around the center
+    vec2 rotatedTexCoord = vec2(
+        (v_texCoord.x - 0.5) * cos(u_textureRotation) - (v_texCoord.y - 0.5) * sin(u_textureRotation) + 0.5,
+        (v_texCoord.x - 0.5) * sin(u_textureRotation) + (v_texCoord.y - 0.5) * cos(u_textureRotation) + 0.5
+    );
+
+    // Fetch texel from the texture
+    vec4 texColor = texture2D(u_texture, rotatedTexCoord);
+
+
+    // Output the color from the texture
+    gl_FragColor = texColor;
+}`;
+
+
+
+
+
+/////////////////////
+/// SPHERE SHADER ///
+/////////////////////
+
+// Vertex shader
+const SphereVertexShaderSource = `
+attribute vec3 vertex;
+uniform mat4 ModelViewProjectionMatrix;
+
+void main() {
+    gl_Position = ModelViewProjectionMatrix * vec4(vertex,1.0);
+}`;
+
+
+// Fragment shader
+const SphereFragmentShaderSource = `
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+   precision highp float;
+#else
+   precision mediump float;
+#endif
+
+uniform vec4 color;
+void main() {
+    gl_FragColor = color;
+}`;
